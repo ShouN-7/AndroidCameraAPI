@@ -7,6 +7,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -29,6 +30,19 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder)
     {
         try{
+            // カメラパラメータ設定（例）
+            // カメラの設定リストを取得
+            Camera.Parameters parameters = mCamera.getParameters();
+            // 端末がサポートするプレビューサイズリストを取得
+            List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+            // プレビューサイズを設定
+            parameters.setPreviewSize(previewSizes.get(2).width, previewSizes.get(2).height);
+            // パラメータをカメラに反映する
+            mCamera.setParameters(parameters);
+            // プレビュー画面が90度回転する問題への対策
+            mCamera.setDisplayOrientation(90);
+
+            // プレビューにサーフェスホルダーを渡してプレビューを開始
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
         }catch(IOException e){
